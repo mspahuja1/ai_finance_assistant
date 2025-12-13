@@ -1,15 +1,15 @@
-# agents_1.py
-
 from langgraph.graph import StateGraph, END
 from langgraph.graph.message import MessagesState
 from langchain_core.messages import HumanMessage, AIMessage, SystemMessage
 from langgraph.checkpoint.sqlite import SqliteSaver
 from langchain_google_genai import ChatGoogleGenerativeAI
+from langchain_core.tools import tool
+from typing import Annotated
+from langgraph.prebuilt import ToolNode
 
 # ---------------------------------------------------------
 # Initialize Gemini LLM
 # ---------------------------------------------------------
-
 import os
 from dotenv import load_dotenv
 load_dotenv()
@@ -21,7 +21,6 @@ llm = ChatGoogleGenerativeAI(
     temperature=0.7,
     api_key=api_key,
 )
-
 
 # ---------------------------------------------------------
 # Logging Initialization
@@ -44,19 +43,6 @@ logging.basicConfig(
         logging.StreamHandler()
     ]
 )
-
-"""
-finance_agent_logger = logging.getLogger("finance_agent")
-portfolio_agent_logger = logging.getLogger("portfolio_agent")
-market_agent_logger = logging.getLogger("market_agent")
-goal_agent_logger = logging.getLogger("goal_agent")
-news_agent_logger = logging.getLogger("news_agent")
-tax_agent_logger = logging.getLogger("tax_agent")
-router_logger = logging.getLogger("router")   # ✅ 
-"""
-
-
-
 
 # ---------------------------------------------------------
 # Define logs for each agent
@@ -90,18 +76,227 @@ tax_agent_logger = create_agent_logger("tax_agent", "tax_agent.log")
 router_logger = create_agent_logger("router", "router.log")
 
 # ---------------------------------------------------------
+# Tool Definition for Market Data
+# ---------------------------------------------------------
+# ---------------------------------------------------------
+# Tool Definition for Market Data with MCP Logging
+# ---------------------------------------------------------
+import yfinance as yf
+import json
+import time
+
+# Create MCP-specific logger
+mcp_logger = create_agent_logger("mcp_transactions", "mcp_transactions.log")
+
+# ---------------------------------------------------------
+# Import MCP Client
+# ---------------------------------------------------------
+import sys
+import os
+
+# Add the mcp directory to the path
+mcp_dir = os.path.join(os.path.dirname(__file__), "mcp")
+sys.path.insert(0, mcp_dir)
+
+from mcp_client import MCPClient
+
+# Initialize MCP Client
+MCP_SERVER_PATH = os.path.join(mcp_dir, "server.py")
+mcp_client = MCPClient(MCP_SERVER_PATH)
+
+# ---------------------------------------------------------
+# Tool Definition Using MCP Client
+# ---------------------------------------------------------
+@tool
+def get_market_data(symbol: Annotated[str, "Stock ticker symbol (e.g., AAPL, GOOGL)"]) -> str:
+    """Fetch 1-year market history and current data for a stock symbol via MCP"""
+    
+    # Log the incoming request
+    request_id = f"mcp-{int(time.time() * 1000)}"
+    mcp_logger.info(f"━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
+    mcp_logger.info(f"📥 MCP REQUEST [{request_id}]")
+    mcp_logger.info(f"Tool: get_market_data")
+    mcp_logger.info(f"Input Parameters: {{'symbol': '{symbol}'}}")
+    mcp_logger.info(f"Timestamp: {time.strftime('%Y-%m-%d %H:%M:%S')}")
+    
+    start_time = time.time()
+    
+    try:
+        # Call MCP server via client
+        mcp_logger.info(f"🔄 Calling MCP server for {symbol}...")
+        response = mcp_client.call_tool("get_market_data", {"symbol": symbol})
+        
+        # Debug log
+        mcp_logger.info(f"🔍 RAW MCP RESPONSE: {json.dumps(response, indent=2)}")
+        
+        if "error" in response:
+            error_msg = f"MCP Error: {response['error']}"
+            mcp_logger.error(f"❌ {error_msg}")
+            return error_msg
+        
+        # Extract result from MCP response
+        if "result" in response:
+            result_obj = response["result"]
+            
+            # Check if there's an error flag
+            if result_obj.get("isError"):
+                error_text = result_obj.get("content", [{}])[0].get("text", "Unknown error")
+                mcp_logger.error(f"❌ MCP returned error: {error_text}")
+                return f"Error: {error_text}"
+            
+            # Extract the content
+            content = result_obj.get("content", [])
+            if content and len(content) > 0:
+                # Get the text from the first content item
+                text_content = content[0].get("text", "")
+                mcp_logger.info(f"🔍 TEXT CONTENT (first 200 chars): {text_content[:200]}")
+                
+                # Parse the JSON data
+                market_data = json.loads(text_content)
+                
+                if not market_data or len(market_data) == 0:
+                    return f"No data found for {symbol}"
+                
+                # Get latest data point
+                latest = market_data[-1]
+                
+                # Calculate metrics from all data points
+                high_prices = [float(d.get('High', 0)) for d in market_data if 'High' in d]
+                low_prices = [float(d.get('Low', 0)) for d in market_data if 'Low' in d]
+                volumes = [float(d.get('Volume', 0)) for d in market_data if 'Volume' in d]
+                
+                year_high = max(high_prices) if high_prices else 0
+                year_low = min(low_prices) if low_prices else 0
+                avg_volume = sum(volumes) / len(volumes) if volumes else 0
+                
+                # Format the result
+                result = f"""Market Data for {symbol}:
+📊 Current Price: ${float(latest.get('Close', 0)):.2f}
+📈 Day High: ${float(latest.get('High', 0)):.2f}
+📉 Day Low: ${float(latest.get('Low', 0)):.2f}
+📦 Volume: {float(latest.get('Volume', 0)):,.0f}
+🎯 52-Week High: ${year_high:.2f}
+🎯 52-Week Low: ${year_low:.2f}
+📊 Avg Volume: {avg_volume:,.0f}
+📅 Last Updated: {latest.get('Date', 'N/A')}
+"""
+                
+                elapsed = time.time() - start_time
+                mcp_logger.info(f"✅ MCP call successful")
+                mcp_logger.info(f"Records processed: {len(market_data)}")
+                mcp_logger.info(f"📤 MCP RESPONSE [{request_id}]")
+                mcp_logger.info(f"Status: SUCCESS")
+                mcp_logger.info(f"Execution time: {elapsed:.3f}s")
+                mcp_logger.info(f"━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
+                
+                return result
+        
+        mcp_logger.error(f"🔍 Unexpected response structure")
+        mcp_logger.error(f"🔍 Full response: {json.dumps(response, indent=2)}")
+        return "Unexpected response format from MCP server"
+        
+    except json.JSONDecodeError as e:
+        elapsed = time.time() - start_time
+        mcp_logger.error(f"❌ JSON DECODE ERROR [{request_id}]")
+        mcp_logger.error(f"Error: {str(e)}")
+        mcp_logger.error(f"Execution time: {elapsed:.3f}s")
+        mcp_logger.error(f"━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
+        return f"Error parsing data: {str(e)}"
+    except Exception as e:
+        elapsed = time.time() - start_time
+        mcp_logger.error(f"❌ MCP ERROR [{request_id}]")
+        mcp_logger.error(f"Error: {str(e)}")
+        mcp_logger.error(f"Traceback: ", exc_info=True)
+        mcp_logger.error(f"Execution time: {elapsed:.3f}s")
+        mcp_logger.error(f"━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
+        return f"Error: {str(e)}"
+
+# Create tools list
+tools = [get_market_data]
+
+# ---------------------------------------------------------
+# Bind Tools to LLM (AFTER llm is defined)
+# ---------------------------------------------------------
+llm_with_tools = llm.bind_tools(tools)
+
+# ---------------------------------------------------------
+# Tool Execution Node
+# ---------------------------------------------------------
+from langgraph.prebuilt import ToolNode
+
+# Wrap the tool node to add logging
+def logged_tool_node(state: MessagesState):
+    """Tool node wrapper that logs all tool executions"""
+    last_message = state["messages"][-1]
+    
+    if hasattr(last_message, 'tool_calls') and last_message.tool_calls:
+        for tool_call in last_message.tool_calls:
+            mcp_logger.info(f"🔧 TOOL INVOCATION DETECTED")
+            mcp_logger.info(f"Tool name: {tool_call.get('name', 'unknown')}")
+            mcp_logger.info(f"Tool ID: {tool_call.get('id', 'unknown')}")
+            mcp_logger.info(f"Arguments: {json.dumps(tool_call.get('args', {}), indent=2)}")
+    
+    # Execute the actual tool
+    result = tool_node.invoke(state)
+    
+    # Log the tool execution result
+    if result and "messages" in result:
+        for msg in result["messages"]:
+            if hasattr(msg, 'content'):
+                mcp_logger.info(f"🔧 TOOL EXECUTION COMPLETE")
+                mcp_logger.info(f"Result preview: {str(msg.content)[:200]}...")
+    
+    return result
+
+# Create the tool node
+tool_node = ToolNode(tools)
+
+
+# Define should_continue function BEFORE using it
+def should_continue(state: MessagesState):
+    """Determine if we need to call tools or end"""
+    last_message = state["messages"][-1]
+    
+    # If the LLM makes a tool call, continue to tools
+    if hasattr(last_message, 'tool_calls') and last_message.tool_calls:
+        return "tools"
+    # Otherwise end
+    return "end"
+
+# Wrap the tool node to add logging
+def logged_tool_node(state: MessagesState):
+    """Tool node wrapper that logs all tool executions"""
+    last_message = state["messages"][-1]
+    
+    if hasattr(last_message, 'tool_calls') and last_message.tool_calls:
+        for tool_call in last_message.tool_calls:
+            mcp_logger.info(f"🔧 TOOL INVOCATION DETECTED")
+            mcp_logger.info(f"Tool name: {tool_call.get('name', 'unknown')}")
+            mcp_logger.info(f"Tool ID: {tool_call.get('id', 'unknown')}")
+            mcp_logger.info(f"Arguments: {json.dumps(tool_call.get('args', {}), indent=2)}")
+    
+    # Execute the actual tool
+    result = tool_node.invoke(state)
+    
+    # Log the tool execution result
+    if result and "messages" in result:
+        for msg in result["messages"]:
+            if hasattr(msg, 'content'):
+                mcp_logger.info(f"🔧 TOOL EXECUTION COMPLETE")
+                mcp_logger.info(f"Result preview: {str(msg.content)[:200]}...")
+    
+    return result
+
+
+# ---------------------------------------------------------
 # User Query Node
 # ---------------------------------------------------------
 def user_query_node(state: MessagesState):
-    # The last message is the new user message
     return {"messages": state["messages"]}
 
 # ---------------------------------------------------------
 # Router Node
 # ---------------------------------------------------------
-
-router_logger = logging.getLogger("router")
-
 def workflow_router(state: MessagesState):
     router_logger.info("➡️ Entered LLM Router with state: %s", state)
 
@@ -120,7 +315,7 @@ def workflow_router(state: MessagesState):
         Rules:
         - If the user asks about general finance concepts → finance
         - If the user asks about investments, holdings, diversification → portfolio
-        - If the user asks about markets, sectors, macro trends → market
+        - If the user asks about markets, sectors, macro trends, stock prices, market data → market
         - If the user asks about goals, retirement, budgeting → goal
         - If the user asks about financial news → news
         - If the user asks about taxes → tax
@@ -129,7 +324,6 @@ def workflow_router(state: MessagesState):
     )
 
     user_message = state["messages"][-1]
-
     response = llm.invoke([system, user_message])
     route = response.content.strip().lower()
 
@@ -138,9 +332,8 @@ def workflow_router(state: MessagesState):
     return {**state, "route": route}
 
 # ---------------------------------------------------------
-# Agent Nodes (each calls Gemini with a system prompt)
+# Agent Nodes
 # ---------------------------------------------------------
-
 def reject_agent(state: MessagesState):
     return {
         "messages": state["messages"] + [
@@ -155,8 +348,6 @@ def finance_agent(state: MessagesState):
     finance_agent_logger.info("⬅️ Exiting FINANCE agent with response: %s", response)
     return {"messages": state["messages"] + [response]}
 
-#portfolio_agent_logger = logging.getLogger("portfolio_agent")
-
 def portfolio_agent(state: MessagesState):
     portfolio_agent_logger.info("➡️ Entered PORTFOLIO agent with state: %s", state)
     system = SystemMessage(content="You are a Portfolio Analysis Agent. Analyze holdings, risk, diversification, and performance.")
@@ -164,22 +355,22 @@ def portfolio_agent(state: MessagesState):
     portfolio_agent_logger.info("⬅️ Exiting PORTFOLIO agent with response: %s", response)
     return {"messages": state["messages"] + [response]}
 
-
-# ---------------------------------------------------------
-
-#market_agent_logger = logging.getLogger("market_agent")
-
-def market_agent(state):
+def market_agent(state: MessagesState):
     market_agent_logger.info("➡️ Entered MARKET agent with state: %s", state)
-    system = SystemMessage(content="You are a Market Analysis Agent...")
-    response = llm.invoke([system] + state["messages"])
-    market_agent_logger.info("⬅️ Exiting MARKET agent with response: %s", response)
+    
+    system = SystemMessage(content="""You are a Market Analysis Agent with access to real-time market data.
+
+When users ask about stocks, markets, or specific companies:
+1. Use the get_market_data tool to fetch current data for specific stock symbols
+2. Analyze the data and provide insights
+3. Explain market trends, performance, and what the numbers mean
+
+If the user mentions a company name, identify the ticker symbol and use the tool.""")
+    
+    response = llm_with_tools.invoke([system] + state["messages"])
+    market_agent_logger.info("⬅️ Market agent response: %s", response)
+    
     return {"messages": state["messages"] + [response]}
-
-
-# ---------------------------------------------------------
-
-#goal_agent_logger = logging.getLogger("goal_agent")
 
 def goal_agent(state: MessagesState):
     goal_agent_logger.info("➡️ Entered GOAL agent with state: %s", state)
@@ -188,16 +379,12 @@ def goal_agent(state: MessagesState):
     goal_agent_logger.info("⬅️ Exiting GOAL agent with response: %s", response)
     return {"messages": state["messages"] + [response]}
 
-#news_agent_logger = logging.getLogger("news_agent")
-
 def news_agent(state: MessagesState):
     news_agent_logger.info("➡️ Entered NEWS agent with state: %s", state)
     system = SystemMessage(content="You are a News Synthesizer Agent. Summarize financial news and explain its implications.")
     response = llm.invoke([system] + state["messages"])
     news_agent_logger.info("⬅️ Exiting NEWS agent with response: %s", response)
     return {"messages": state["messages"] + [response]}
-
-#tax_agent_logger = logging.getLogger("tax_agent")
 
 def tax_agent(state: MessagesState):
     tax_agent_logger.info("➡️ Entered TAX agent with state: %s", state)
@@ -206,7 +393,6 @@ def tax_agent(state: MessagesState):
     tax_agent_logger.info("⬅️ Exiting TAX agent with response: %s", response)
     return {"messages": state["messages"] + [response]}
 
-#router_logger = logging.getLogger("router")
 # ---------------------------------------------------------
 # Build Graph
 # ---------------------------------------------------------
@@ -219,6 +405,7 @@ graph.add_node("router", workflow_router)
 graph.add_node("finance", finance_agent)
 graph.add_node("portfolio", portfolio_agent)
 graph.add_node("market", market_agent)
+graph.add_node("tools", logged_tool_node)
 graph.add_node("goal", goal_agent)
 graph.add_node("news", news_agent)
 graph.add_node("tax", tax_agent)
@@ -240,10 +427,22 @@ graph.add_conditional_edges(
     },
 )
 
+# Market agent can call tools or end
+graph.add_conditional_edges(
+    "market",
+    should_continue,
+    {
+        "tools": "tools",
+        "end": END,
+    },
+)
+
+# After tools execute, go back to market agent
+graph.add_edge("tools", "market")
+
 # End edges
 graph.add_edge("finance", END)
 graph.add_edge("portfolio", END)
-graph.add_edge("market", END)
 graph.add_edge("goal", END)
 graph.add_edge("news", END)
 graph.add_edge("tax", END)
@@ -253,22 +452,10 @@ graph.add_edge("reject", END)
 graph.set_entry_point("user_query")
 
 # ---------------------------------------------------------
-# Compile with SQLite Checkpointer (LangGraph 1.0.4 + sqlite 3.0.1)
+# Compile with SQLite Checkpointer
 # ---------------------------------------------------------
-
 import sqlite3
-from langgraph.checkpoint.sqlite import SqliteSaver
 
 conn = sqlite3.connect("memory.db", check_same_thread=False)
 checkpointer = SqliteSaver(conn)
 app = graph.compile(checkpointer=checkpointer)
-
-######################################################
-
-# Testing, should be commented once test is done
-"""
-if __name__ == "__main__":
-    result = app.invoke({"messages": [HumanMessage(content="Give me a market update") ]})
-    print(result)
-"""
-######################################################

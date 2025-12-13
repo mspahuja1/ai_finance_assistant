@@ -47,7 +47,6 @@ if st.sidebar.button("Clear Chat"):
 
 # Start a brand new conversation (new LangGraph thread)
 if st.sidebar.button("Start New Chat"):
-    import uuid
     st.session_state["thread_id"] = f"thread-{uuid.uuid4()}"
     st.session_state.pop("last_result", None)
 
@@ -62,9 +61,10 @@ user_input = st.chat_input("Ask me anything about your finances...")
 if user_input:
     payload = {"messages": [HumanMessage(content=user_input)]}
 
+    # 🔧 FIX: Use "configurable" key for LangGraph 1.0
     result = app.invoke(
         payload,
-        config={"thread_id": st.session_state["thread_id"]}
+        config={"configurable": {"thread_id": st.session_state["thread_id"]}}
     )
 
     # ✅ Store the latest result so we can display it
@@ -78,7 +78,11 @@ if "last_result" in st.session_state:
                 st.write(msg.content)
         elif isinstance(msg, AIMessage):
             with st.chat_message("assistant"):
-                st.write(msg.content)
+                # 🔧 FIX: Handle tool calls in AIMessage
+                if hasattr(msg, 'tool_calls') and msg.tool_calls:
+                    st.write("🔧 Fetching market data...")
+                else:
+                    st.write(msg.content)
 
 # ---------------------------------------------------------
 #  Log file viewer 
@@ -86,6 +90,7 @@ if "last_result" in st.session_state:
 LOG_DIR = "/Users/mandeep/myprojects/ai_finance_assistant/logs"
 
 agent_logs = {
+    "🔄 MCP Transactions": "mcp_transactions.log",
     "Router": "router.log",
     "Finance Agent": "finance_agent.log",
     "Portfolio Agent": "portfolio_agent.log",
