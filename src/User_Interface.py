@@ -1,8 +1,14 @@
 import streamlit as st
-from langchain_core.messages import HumanMessage, AIMessage
-from agents_1 import app
-import uuid
+import sys
 import os
+
+# Add src directory to path
+current_dir = os.path.dirname(os.path.abspath(__file__))
+sys.path.insert(0, current_dir)
+
+from langchain_core.messages import HumanMessage, AIMessage
+from app import app
+import uuid
 
 # --- Page Title ---
 st.set_page_config(page_title="AI Finance Assistant - Mandeep Pahuja", layout="wide")
@@ -50,6 +56,29 @@ if st.sidebar.button("Start New Chat"):
     st.session_state["thread_id"] = f"thread-{uuid.uuid4()}"
     st.session_state.pop("last_result", None)
 
+# ✅ Cache Statistics
+st.sidebar.divider()
+st.sidebar.header("💾 Cache Statistics")
+
+try:
+    from tools.cache import market_cache
+    cache_stats = market_cache.get_stats()
+    
+    col1, col2 = st.sidebar.columns(2)
+    with col1:
+        st.metric("📦 Cached", cache_stats['valid_entries'])
+        st.metric("⏰ TTL", f"{cache_stats['ttl_seconds']}s")
+    
+    with col2:
+        st.metric("🗑️ Expired", cache_stats['expired_entries'])
+        st.metric("📊 Total", cache_stats['total_entries'])
+    
+    if st.sidebar.button("🗑️ Clear Cache"):
+        market_cache.clear()
+        st.sidebar.success("Cache cleared!")
+except Exception as e:
+    st.sidebar.error(f"Cache stats unavailable: {e}")
+
 # ✅ Generate a unique thread ID per user session
 if "thread_id" not in st.session_state:
     st.session_state["thread_id"] = f"thread-{uuid.uuid4()}"
@@ -61,11 +90,11 @@ user_input = st.chat_input("Ask me anything about your finances...")
 if user_input:
     payload = {"messages": [HumanMessage(content=user_input)]}
 
-    # 🔧 FIX: Use "configurable" key for LangGraph 1.0
-    result = app.invoke(
-        payload,
-        config={"configurable": {"thread_id": st.session_state["thread_id"]}}
-    )
+    with st.spinner("🤔 Thinking..."):
+        result = app.invoke(
+            payload,
+            config={"configurable": {"thread_id": st.session_state["thread_id"]}}
+        )
 
     # ✅ Store the latest result so we can display it
     st.session_state["last_result"] = result
@@ -78,16 +107,16 @@ if "last_result" in st.session_state:
                 st.write(msg.content)
         elif isinstance(msg, AIMessage):
             with st.chat_message("assistant"):
-                # 🔧 FIX: Handle tool calls in AIMessage
+                # Handle tool calls
                 if hasattr(msg, 'tool_calls') and msg.tool_calls:
-                    st.write("🔧 Fetching market data...")
+                    st.write("🔧 Fetching data...")
                 else:
                     st.write(msg.content)
 
 # ---------------------------------------------------------
 #  Log file viewer 
 # ---------------------------------------------------------
-LOG_DIR = "/Users/mandeep/myprojects/ai_finance_assistant/logs"
+LOG_DIR = os.path.join(os.path.dirname(current_dir), "logs")
 
 agent_logs = {
     "🔄 MCP Transactions": "mcp_transactions.log",

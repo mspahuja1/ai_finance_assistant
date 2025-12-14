@@ -53,8 +53,8 @@ def create_agent_logger(name, filename):
 
     handler = RotatingFileHandler(
         os.path.join(LOG_DIR, filename),
-        maxBytes=5_000_000,
-        backupCount=5
+        maxBytes=1_000_000,
+        backupCount=1
     )
     formatter = logging.Formatter(
         "%(asctime)s [%(levelname)s] %(name)s - %(message)s"
@@ -107,6 +107,7 @@ mcp_client = MCPClient(MCP_SERVER_PATH)
 # ---------------------------------------------------------
 # Tool Definition Using MCP Client
 # ---------------------------------------------------------
+
 @tool
 def get_market_data(symbol: Annotated[str, "Stock ticker symbol (e.g., AAPL, GOOGL)"]) -> str:
     """Fetch 1-year market history and current data for a stock symbol via MCP"""
@@ -211,6 +212,53 @@ def get_market_data(symbol: Annotated[str, "Stock ticker symbol (e.g., AAPL, GOO
         mcp_logger.error(f"━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
         return f"Error: {str(e)}"
 
+
+# ---------------------------------------------------------
+# Stock News Tool
+# ---------------------------------------------------------
+@tool
+def get_stock_news(symbol: Annotated[str, "Stock ticker symbol (e.g., AAPL, RIV)"]) -> str:
+    """Fetch recent news articles for a stock symbol"""
+    
+    request_id = f"news-{int(time.time() * 1000)}"
+    news_agent_logger.info(f"📰 NEWS REQUEST [{request_id}] - {symbol}")
+    start_time = time.time()
+    
+    try:
+        import yfinance as yf
+        ticker = yf.Ticker(symbol)
+        news = ticker.news
+        
+        if not news:
+            return f"No recent news found for {symbol}"
+        
+        result = f"📰 Recent News for {symbol}:\n\n"
+        
+        for i, article in enumerate(news[:5], 1):
+            title = article.get('title', 'No title')
+            publisher = article.get('publisher', 'Unknown')
+            link = article.get('link', '#')
+            timestamp = article.get('providerPublishTime', 0)
+            
+            from datetime import datetime
+            date = datetime.fromtimestamp(timestamp).strftime('%Y-%m-%d %H:%M')
+            
+            result += f"{i}. {title}\n"
+            result += f"   Publisher: {publisher}\n"
+            result += f"   Date: {date}\n"
+            result += f"   Link: {link}\n\n"
+        
+        elapsed = time.time() - start_time
+        news_agent_logger.info(f"✅ SUCCESS [{request_id}] - {elapsed:.3f}s - {len(news)} articles")
+        return result
+        
+    except Exception as e:
+        elapsed = time.time() - start_time
+        news_agent_logger.error(f"❌ ERROR [{request_id}] - {str(e)}")
+        return f"Error: {str(e)}"
+
+
+
 # Create tools list
 tools = [get_market_data]
 
@@ -218,6 +266,23 @@ tools = [get_market_data]
 # Bind Tools to LLM (AFTER llm is defined)
 # ---------------------------------------------------------
 llm_with_tools = llm.bind_tools(tools)
+
+# ---------------------------------------------------------
+# News Agent Tools Setup
+# ---------------------------------------------------------
+news_agent_tools = [get_market_data, get_stock_news]
+llm_with_news_agent_tools = llm.bind_tools(news_agent_tools)
+news_agent_tool_node = ToolNode(news_agent_tools)
+
+def news_agent_should_continue(state: MessagesState):
+    """Determine if news agent needs to call tools or end"""
+    last_message = state["messages"][-1]
+    
+    if hasattr(last_message, 'tool_calls') and last_message.tool_calls:
+        return "news_tools"
+    return "end"
+
+
 
 # ---------------------------------------------------------
 # Tool Execution Node
@@ -381,9 +446,20 @@ def goal_agent(state: MessagesState):
 
 def news_agent(state: MessagesState):
     news_agent_logger.info("➡️ Entered NEWS agent with state: %s", state)
-    system = SystemMessage(content="You are a News Synthesizer Agent. Summarize financial news and explain its implications.")
-    response = llm.invoke([system] + state["messages"])
+    
+    system = SystemMessage(content="""You are a News Synthesizer Agent with access to market data and news.
+
+Your workflow when asked about stock news:
+1. FIRST call get_market_data(symbol) to understand current stock performance
+2. THEN call get_stock_news(symbol) to get recent news articles
+3. Synthesize both: Explain how the news relates to stock movement
+4. Provide investor insights and implications
+
+Always provide comprehensive analysis combining market context with news.""")
+    
+    response = llm_with_news_agent_tools.invoke([system] + state["messages"])
     news_agent_logger.info("⬅️ Exiting NEWS agent with response: %s", response)
+    
     return {"messages": state["messages"] + [response]}
 
 def tax_agent(state: MessagesState):
@@ -408,6 +484,7 @@ graph.add_node("market", market_agent)
 graph.add_node("tools", logged_tool_node)
 graph.add_node("goal", goal_agent)
 graph.add_node("news", news_agent)
+graph.add_node("news_tools", news_agent_tool_node)
 graph.add_node("tax", tax_agent)
 
 # Edges
@@ -440,13 +517,18 @@ graph.add_conditional_edges(
 # After tools execute, go back to market agent
 graph.add_edge("tools", "market")
 
-# End edges
-graph.add_edge("finance", END)
-graph.add_edge("portfolio", END)
-graph.add_edge("goal", END)
-graph.add_edge("news", END)
-graph.add_edge("tax", END)
-graph.add_edge("reject", END)
+# News agent can call tools or end
+graph.add_conditional_edges(
+    "news",
+    news_agent_should_continue,
+    {
+        "news_tools": "news_tools",
+        "end": END,
+    },
+)
+
+# After news tools execute, go back to news agent
+graph.add_edge("news_tools", "news")
 
 # Entry point
 graph.set_entry_point("user_query")
