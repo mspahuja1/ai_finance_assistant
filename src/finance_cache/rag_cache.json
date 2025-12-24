@@ -1,0 +1,41 @@
+{
+  "8d3a866f4bb62445e85531cffaf41548": {
+    "query": "difference between etf and fixed income",
+    "context": "[Source 1: Exchange-traded fund]\nAn exchange-traded fund (ETF) is a type of investment fund that is also an exchange-traded product; i.e., it is bought and sold on stock exchanges. ETFs own financial assets such as stocks, bonds, currencies, debts, futures contracts, and/or commodities such as gold bars. Many ETFs provide some level of diversification compared to owning an individual stock.\n\n---\n\n[Source 2: Exchange-traded fund]\nAn exchange-traded fund (ETF) is a type of investment fund that is also an exchange-traded product; i.e., it is bought and sold on stock exchanges. ETFs own financial assets such as stocks, bonds, currencies, debts, futures contracts, and/or commodities such as gold bars. Many ETFs provide some level of diversification compared to owning an individual stock.\n\n---\n\n[Source 3: Exchange-traded fund]\n== ETFs vs. mutual funds ==\nETFs are similar in many ways to mutual funds, except that ETFs are bought and sold from other owners throughout the day on stock exchanges, whereas mutual funds are bought and sold from the issuer based on their price at day's end. ETFs are also more transparent since their holdings are generally published online daily and, in the United States, are more tax efficient than mutual funds. Unlike mutual funds, ETFs trade on a stock exchange, can be sold short, can be purchased using funds borrowed from a stockbroker (margin), and can be purchased and sold using limit orders, with the buyer or seller aware of the price per share in advance.",
+    "token_stats": {
+      "query_tokens": 9,
+      "context_tokens": 376,
+      "embedding_tokens": 9,
+      "num_chunks": 3,
+      "cache_hit": false
+    },
+    "timestamp": "2025-12-24T01:37:56.287846",
+    "access_count": 1
+  },
+  "49a77002748812622a621a10c60c004c": {
+    "query": "difference between etf and bond assets and funds",
+    "context": "[Source 1: Exchange-traded fund]\nAn exchange-traded fund (ETF) is a type of investment fund that is also an exchange-traded product; i.e., it is bought and sold on stock exchanges. ETFs own financial assets such as stocks, bonds, currencies, debts, futures contracts, and/or commodities such as gold bars. Many ETFs provide some level of diversification compared to owning an individual stock.\n\n---\n\n[Source 2: Exchange-traded fund]\nAn exchange-traded fund (ETF) is a type of investment fund that is also an exchange-traded product; i.e., it is bought and sold on stock exchanges. ETFs own financial assets such as stocks, bonds, currencies, debts, futures contracts, and/or commodities such as gold bars. Many ETFs provide some level of diversification compared to owning an individual stock.\n\n---\n\n[Source 3: Exchange-traded fund]\n=== Costs and fees ===\nBoth ETFs and mutual funds charge annual expense ratios that range from 0.02% of the investment value to upwards of 1% of the investment value. Mutual funds generally have higher annual fees since they have higher marketing, distribution and accounting expenses (12b-1 fees). ETFs are also generally cheaper to operate since, unlike mutual funds, they do not have to buy and sell securities and maintain cash reserves to accommodate shareholder purchases and redemptions.\nStockbrokers may charge different commissions, if any, for the purchase and sale of ETFs and mutual funds. In addition, sales of ETFs in the United States are subject to transaction fees that the national securities exchanges must pay to the SE",
+    "token_stats": {
+      "query_tokens": 12,
+      "context_tokens": 393,
+      "embedding_tokens": 12,
+      "num_chunks": 3,
+      "cache_hit": false
+    },
+    "timestamp": "2025-12-24T01:40:23.459083",
+    "access_count": 1
+  },
+  "f50a4ceb6beb58eec6e8d1ab7591ed6d": {
+    "query": "get me difference between stock and bond",
+    "context": "[Source 1: Bond (finance)]\nBonds and stocks are both securities, but the major difference between the two is that (capital) stockholders have an equity stake in a company (i.e. they are owners), whereas bondholders have a creditor stake in a company (i.e. they are lenders). As creditors, bondholders have priority over stockholders. This means they will be repaid in advance of stockholders, but will rank behind secured creditors, in the event of bankruptcy. Another difference is that bonds usually have a defined term, or maturity, after which the bond is redeemed, whereas stocks typically remain outstanding indefinitely. An exception is an irredeemable bond, which is a perpetuity, that is, a bond with no maturity. Certificates of deposit (CDs) or short-term commercial paper are classified as money market instruments and not bonds: the main difference is the length of the term of the instrument.\n\n---\n\n[Source 2: Bond (finance)]\nIn finance, a bond is a type of security under which the issuer (debtor) owes the holder (creditor) a debt, and is obliged \u2013 depending on the terms \u2013 to provide cash flow to the creditor; which usually consists of repaying the principal (the amount borrowed) of the bond at the maturity date, as well as interest (called the coupon) over a specified amount of time. The timing and the amount of cash flow provided varies, depending on the economic value that is emphasized upon, thus giving rise to different types of bonds. The interest is usually payable at fixed intervals: semiannual, annual, and less often at other periods. Thus, a bond is a form of loan or IOU. Bonds provide the borrower with external funds to finance long-term investments or, in the case of government bonds, to finance current expenditure.\n\n---\n\n[Source 3: Asset allocation]\n== Asset classes ==\nAn asset class is a group of economic resources sharing similar characteristics, such as riskiness and return. There are many types of assets that may or may not be included in an asset allocation strategy.\n\n\n=== Traditional assets ===\nThe \"traditional\" asset classes are stocks, bonds, and cash:\n\nStocks: value, dividend, growth, or sector-specific (or a \"blend\" of any two or more of the preceding); large-cap versus mid-cap, small-cap or micro-cap; domestic, foreign (developed), emerging or frontier markets\nBonds (fixed income securities more generally): investment-grade or junk (high-yield); government or corporate; short-term, intermediate, long-term; domestic, foreign, emerging markets\nCash and cash equivalents (e.g., deposit account, money market fund)\nAllocation among these three provides a starting point. Usually included are hybrid instruments such as convertible bonds and preferred stocks, counting as a mixture of bonds and stocks.",
+    "token_stats": {
+      "query_tokens": 10,
+      "context_tokens": 691,
+      "embedding_tokens": 10,
+      "num_chunks": 3,
+      "cache_hit": false
+    },
+    "timestamp": "2025-12-24T01:49:53.855642",
+    "access_count": 1
+  }
+}

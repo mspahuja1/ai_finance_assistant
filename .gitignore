@@ -2,5 +2,12 @@ venv/
 __pycache__/
 .ipynb_checkpoints/
 data/
-*.log
 .env
+
+# Logs
+logs/
+*.log
+
+# Log backups
+logs_backup_*/
+logs_archive_*.zip

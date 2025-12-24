@@ -1,0 +1,16 @@
+{
+  "8d3a866f4bb62445e85531cffaf41548": {
+    "query": "difference between etf and fixed income",
+    "context": "[Source 1: Exchange-traded fund]\nAn exchange-traded fund (ETF) is a type of investment fund that is also an exchange-traded product; i.e., it is bought and sold on stock exchanges. ETFs own financial assets such as stocks, bonds, currencies, debts, futures contracts, and/or commodities such as gold bars. Many ETFs provide some level of diversification compared to owning an individual stock.\n\n---\n\n[Source 2: Exchange-traded fund]\nAn exchange-traded fund (ETF) is a type of investment fund that is also an exchange-traded product; i.e., it is bought and sold on stock exchanges. ETFs own financial assets such as stocks, bonds, currencies, debts, futures contracts, and/or commodities such as gold bars. Many ETFs provide some level of diversification compared to owning an individual stock.\n\n---\n\n[Source 3: Exchange-traded fund]\n== ETFs vs. mutual funds ==\nETFs are similar in many ways to mutual funds, except that ETFs are bought and sold from other owners throughout the day on stock exchanges, whereas mutual funds are bought and sold from the issuer based on their price at day's end. ETFs are also more transparent since their holdings are generally published online daily and, in the United States, are more tax efficient than mutual funds. Unlike mutual funds, ETFs trade on a stock exchange, can be sold short, can be purchased using funds borrowed from a stockbroker (margin), and can be purchased and sold using limit orders, with the buyer or seller aware of the price per share in advance.",
+    "token_stats": {
+      "query_tokens": 9,
+      "context_tokens": 376,
+      "embedding_tokens": 9,
+      "num_chunks": 3,
+      "cache_hit": true
+    },
+    "timestamp": "2025-12-24T01:29:51.880208",
+    "access_count": 3,
+    "last_accessed": "2025-12-24T01:31:12.993391"
+  }
+}
