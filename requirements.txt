@@ -35,6 +35,8 @@ langgraph-checkpoint-sqlite<3.0.0
 
 # LLM model
 google-generativeai
+
+# this is what i used while developing the code - %pip install --upgrade langchain-google-genai
 langchain-google-genai
 
 
@@ -56,3 +58,12 @@ langchain-text-splitters
 
 # Token count
 tiktoken
+
+# LLM as a judge
+google-genai>=1.0.0
+pandas python-dotenv
+
+# Optional - for visualizations
+matplotlib==3.8.0
+seaborn==0.13.0
+plotly
