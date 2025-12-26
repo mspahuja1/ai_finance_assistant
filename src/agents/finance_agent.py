@@ -1,4 +1,6 @@
 """Finance Agent - General financial education with RAG and Two-Level Semantic Caching"""
+# Designed and developed by Mandeep Pahuja
+
 import sys
 import os
 
@@ -19,6 +21,18 @@ from langchain_google_genai import GoogleGenerativeAIEmbeddings
 from dotenv import load_dotenv
 
 finance_logger = create_logger("finance_agent", "finance_agent.log")
+
+# ===================================================================
+# EVALUATION INTEGRATION
+# ===================================================================
+
+# ✨ Add evaluation integration
+try:
+    from judge.evaluation_runner import EvaluationRunner
+    EVALUATION_ENABLED = True
+except ImportError:
+    EVALUATION_ENABLED = False
+    finance_logger.warning("⚠️ Evaluation system not available")
 
 # ===================================================================
 # TOKEN COUNTING UTILITIES
@@ -159,23 +173,19 @@ class FinanceRAG:
 
 # ===================================================================
 # INITIALIZE RAG SYSTEM
+# Designed and developed by Mandeep Pahuja
 # ===================================================================
 
 # Get API key
 load_dotenv()
 api_key = os.getenv("GOOGLE_API_KEY")
 
+# ✨ DEFINE PATH FIRST (before using it!)
+vector_store_path = os.path.join(src_dir, "finance_faiss_index")
+
 # Initialize RAG with two-level caching
 finance_rag = FinanceRAG(api_key)
 rag_enabled = False
-
-# Token tracking
-total_llm_input_tokens = 0
-total_llm_output_tokens = 0
-total_requests = 0
-
-# Path to vector store
-vector_store_path = os.path.join(src_dir, "finance_faiss_index")
 
 # Load vector store
 if os.path.exists(vector_store_path):
@@ -190,6 +200,22 @@ if os.path.exists(vector_store_path):
 else:
     finance_logger.warning("⚠️ Vector store not found at: %s", vector_store_path)
     finance_logger.warning("⚠️ Run 'python src/tools/setup_rag.py' to create it")
+
+# ✨ Initialize evaluation runner (only once!)
+if EVALUATION_ENABLED:
+    eval_runner = EvaluationRunner(
+        eval_dir="evaluations/finance",
+    #    enable_logging=True
+    )
+    eval_runner.start()
+    finance_logger.info("✅ Evaluation system started")
+else:
+    eval_runner = None
+
+# Token tracking
+total_llm_input_tokens = 0
+total_llm_output_tokens = 0
+total_requests = 0
 
 
 # ===================================================================
@@ -223,6 +249,23 @@ def finance_agent(state: MessagesState):
             finance_logger.info("🎯 LEVEL 2 CACHE HIT! Returning cached LLM response")
             finance_logger.info("💰 Savings: Skipped RAG retrieval + LLM generation")
             
+            # ✨ NEW: Queue evaluation even for cached responses
+        if EVALUATION_ENABLED and eval_runner:
+            try:
+                eval_runner.queue_evaluation(
+                    user_query=user_query,
+                    agent_response=cached_response,
+                    agent_type="finance",
+                    context={
+                    "rag_used": rag_enabled,
+                    "cache_hit": True,
+                    "llm_cache_hit": True
+                    }
+                )
+                finance_logger.info("📊 Evaluation queued (cached response)")
+            except Exception as e:
+                finance_logger.error(f"❌ Evaluation queue failed: {e}")
+            
             # Log cache statistics
             cache_stats = finance_rag.get_cache_stats()
             finance_logger.info("=" * 80)
@@ -239,7 +282,13 @@ def finance_agent(state: MessagesState):
             response = AIMessage(content=cached_response)
             return {"messages": state["messages"] + [response]}
         
+        # If cache_hit but cached_response is None, fall through to normal flow
+        if cache_hit:
+            finance_logger.warning("⚠️ Cache hit but response is None, proceeding normally")
+
         finance_logger.info("🔍 LEVEL 2 CACHE MISS - Proceeding to RAG retrieval...")
+
+        #finance_logger.info("🔍 LEVEL 2 CACHE MISS - Proceeding to RAG retrieval...")
     
     # ============================================================
     # LEVEL 1: Retrieve context (with RAG caching)
@@ -308,6 +357,27 @@ Explain financial concepts clearly and simply with examples.""")
     
     output_tokens = estimate_gemini_tokens(response_content)
     finance_logger.info("📊 LLM Output: %d tokens", output_tokens)
+    
+    # ============================================================
+    # QUEUE EVALUATION (only once!)
+    # ============================================================
+    if EVALUATION_ENABLED and eval_runner:
+        try:
+            eval_runner.queue_evaluation(
+                user_query=user_query,
+                agent_response=response_content,
+                agent_type="finance",
+                context={
+                    "rag_used": rag_enabled,
+                    "rag_context": context if rag_enabled else None,
+                    "sources": [context] if rag_enabled and context else [],
+                    "num_chunks": rag_token_stats.get("num_chunks", 0) if rag_token_stats else 0,
+                    "cache_hit": rag_token_stats.get("cache_hit", False) if rag_token_stats else False
+                }
+            )
+            finance_logger.info("📊 Evaluation queued")
+        except Exception as e:
+            finance_logger.error(f"❌ Evaluation queue failed: {e}")
     
     # Cache the response
     if rag_enabled:

@@ -3,6 +3,7 @@ Base Judge class for AI Finance Assistant evaluation.
 
 Compatible with LangGraph 1.0+ and LangChain 1.0+
 Uses the same LangChain components as your main workflow.
+Designed and developed by Mandee Pahuja
 """
 
 import os

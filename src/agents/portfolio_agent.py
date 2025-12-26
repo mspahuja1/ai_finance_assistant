@@ -1,4 +1,6 @@
 """Portfolio Agent - Portfolio analysis and recommendations"""
+# Designed and developed by Mandeep Pahuja
+
 import sys
 import os
 

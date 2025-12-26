@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 """Test imports directly"""
+# Designed and developed by Mandeep Pahuja
+
 import sys
 import os
 

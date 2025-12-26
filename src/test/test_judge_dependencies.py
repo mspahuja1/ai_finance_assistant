@@ -1,4 +1,5 @@
 # test_judge_dependencies.py
+# Designed and developed by Mandeep Pahuja
 try:
     import google.generativeai as genai
     print("✅ google-generativeai installed")

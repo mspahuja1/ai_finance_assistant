@@ -1,4 +1,6 @@
 """
+Designed and developed by Mandeep Pahuja
+
 Test the LLM-as-a-Judge evaluation system manually.
 """
 import sys

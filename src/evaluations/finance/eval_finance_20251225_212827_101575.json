@@ -1,0 +1,34 @@
+{
+  "overall_score": 5,
+  "accuracy_score": 5,
+  "completeness_score": 5,
+  "clarity_score": 5,
+  "safety_score": 5,
+  "average_dimension_score": 5.0,
+  "strengths": [
+    "Comprehensive categorization of bonds based on issuer, credit quality, and maturity.",
+    "Clear and concise explanations of each category with relevant details.",
+    "Includes \"other types of bonds\" with explanations of convertible, zero-coupon, and inflation-indexed bonds."
+  ],
+  "weaknesses": [
+    "None"
+  ],
+  "explanation": "The response is excellent. It provides a detailed and well-structured overview of how bonds are categorized. The information is accurate, complete, and easy to understand. The inclusion of examples and different types of bonds enhances the overall quality of the response. The use of source material is appropriate and strengthens the credibility of the information.",
+  "confidence": "high",
+  "consistency_score": 0.94,
+  "methodology": "few_shot_guided_evaluation",
+  "technique": "Few-Shot Examples",
+  "judge_name": "Few-Shot Finance Judge",
+  "agent_type": "finance",
+  "user_query": "how is bonds categorized ",
+  "agent_response": "Bonds can be categorized in several ways, primarily based on the issuer, credit quality, and maturity. Here's a breakdown:\n\n**1. By Issuer:**\n\n*   **Government Bonds:** Issued by national governments to finance spending. These are often considered lower risk, especially those from developed nations (Source 1).\n*   **Municipal Bonds:** Issued by state, city, or local governments to fund public projects. These can be tax-exempt, making them attractive to investors (Source 2).\n*   **Corporate Bonds:** Issued by companies to raise capital for various purposes, such as expansion or acquisitions. Corporate bonds generally carry a higher risk than government bonds (Source 2).\n\n**2. By Credit Quality:**\n\n*   **Investment-Grade Bonds:** These bonds are considered relatively low risk and are rated BBB- or higher by Standard & Poor's or Baa3 or higher by Moody's (Source 3).\n*   **High-Yield Bonds (Junk Bonds):** These bonds have a lower credit rating (BB+ or lower by S&P, or Ba1 or lower by Moody's) and are considered riskier. To compensate for the higher risk, they offer higher yields (Source 3).\n\n**3. By Maturity:**\n\n*   **Short-Term Bonds:** Mature in one to five years (Source 3).\n*   **Intermediate-Term Bonds:** Mature in five to ten years (Source 3).\n*   **Long-Term Bonds:** Mature in over ten years (Source 3).\n\n**4. Other Types of Bonds:**\n\n*   **Convertible Bonds:** These bonds can be converted into a predetermined amount of the issuer's equity or common stock (Source 3).\n*   **Zero-Coupon Bonds:** These bonds don't pay periodic interest (coupons). Instead, they are sold at a discount to their face value and mature at face value (Source 1). The investor's return comes from the difference between the purchase price and the face value.\n*   **Inflation-Indexed Bonds:** These bonds are designed to protect investors from inflation. The principal amount is adjusted based on an inflation index (Source 1).",
+  "examples_used": 4,
+  "evaluation_timestamp": "2025-12-25T21:28:27.101166",
+  "context_provided": true,
+  "raw_response": "Overall Score (1-5): 5\nAccuracy Score (1-5): 5\nCompleteness Score (1-5): 5\nClarity Score (1-5): 5\nSafety Score (1-5): 5\n\nStrengths:\n- Comprehensive categorization of bonds based on issuer, credit quality, and maturity.\n- Clear and concise explanations of each category with relevant details.\n- Includes \"other types of bonds\" with explanations of convertible, zero-coupon, and inflation-indexed bonds.\n\nWeaknesses:\n- None\n\nExplanation:\nThe response is excellent. It provides a detailed and well-structured overview of how bonds are categorized. The information is accurate, complete, and easy to understand. The inclusion of examples and different types of bonds enhances the overall quality of the response. The use of source material is appropriate and strengthens the credibility of the information.",
+  "composite_score": 5,
+  "judge_type": "multi_judge",
+  "judges_used": [
+    "few_shot"
+  ]
+}

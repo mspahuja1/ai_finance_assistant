@@ -1,0 +1,33 @@
+{
+  "overall_score": 1,
+  "accuracy_score": 1,
+  "completeness_score": 1,
+  "clarity_score": 1,
+  "safety_score": 1,
+  "average_dimension_score": 1.0,
+  "strengths": [
+    "None"
+  ],
+  "weaknesses": [
+    "Fails to answer the question.",
+    "Provides no information."
+  ],
+  "explanation": "The response \"None\" is completely inadequate. It fails to provide any information about what a stock broker is. This is a basic finance question that should be easily answered.",
+  "confidence": "medium",
+  "consistency_score": 0.83,
+  "methodology": "few_shot_guided_evaluation",
+  "technique": "Few-Shot Examples",
+  "judge_name": "Few-Shot Finance Judge",
+  "agent_type": "finance",
+  "user_query": "who is a stock broker",
+  "agent_response": null,
+  "examples_used": 4,
+  "evaluation_timestamp": "2025-12-25T22:10:26.810091",
+  "context_provided": true,
+  "raw_response": "Overall Score (1-5): 1\nAccuracy Score (1-5): 1\nCompleteness Score (1-5): 1\nClarity Score (1-5): 1\nSafety Score (1-5): 1\n\nStrengths:\n- None\n\nWeaknesses:\n- Fails to answer the question.\n- Provides no information.\n\nExplanation: The response \"None\" is completely inadequate. It fails to provide any information about what a stock broker is. This is a basic finance question that should be easily answered.",
+  "composite_score": 1,
+  "judge_type": "multi_judge",
+  "judges_used": [
+    "few_shot"
+  ]
+}

@@ -1,0 +1,33 @@
+{
+  "overall_score": 1,
+  "accuracy_score": 1,
+  "completeness_score": 1,
+  "clarity_score": 1,
+  "safety_score": 1,
+  "average_dimension_score": 1.0,
+  "strengths": [
+    "None"
+  ],
+  "weaknesses": [
+    "The response is \"None,\" which means it doesn't answer the user's question.",
+    "The response provides no information, even though the query is straightforward."
+  ],
+  "explanation": "The response is completely inadequate. A stock broker is a common financial term, and the agent should be able to provide a definition. The \"None\" response indicates a failure to retrieve or generate any relevant information.",
+  "confidence": "medium",
+  "consistency_score": 0.83,
+  "methodology": "few_shot_guided_evaluation",
+  "technique": "Few-Shot Examples",
+  "judge_name": "Few-Shot Finance Judge",
+  "agent_type": "finance",
+  "user_query": "who is a stock broker",
+  "agent_response": null,
+  "examples_used": 4,
+  "evaluation_timestamp": "2025-12-25T22:12:19.928076",
+  "context_provided": true,
+  "raw_response": "Overall Score (1-5): 1\nAccuracy Score (1-5): 1\nCompleteness Score (1-5): 1\nClarity Score (1-5): 1\nSafety Score (1-5): 1\n\nStrengths:\n- None\n\nWeaknesses:\n- The response is \"None,\" which means it doesn't answer the user's question.\n- The response provides no information, even though the query is straightforward.\n\nExplanation:\nThe response is completely inadequate. A stock broker is a common financial term, and the agent should be able to provide a definition. The \"None\" response indicates a failure to retrieve or generate any relevant information.",
+  "composite_score": 1,
+  "judge_type": "multi_judge",
+  "judges_used": [
+    "few_shot"
+  ]
+}

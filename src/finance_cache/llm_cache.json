@@ -85,5 +85,109 @@
     },
     "timestamp": "2025-12-24T11:19:32.151083",
     "access_count": 1
+  },
+  "c5a1f2e76868dc2c3159beacaf9030bd": {
+    "query": "What is compound interest?",
+    "response": "Compound interest is when interest is earned on both the initial principal and the accumulated interest from previous periods (Source 1). It's like earning interest on your interest.\n\nHere's a breakdown:\n\n*   **How it works:** Instead of paying out the interest earned, it's reinvested or retained, which then earns more interest in the future (Source 1).\n*   **Simple vs. Compound Interest:** Compound interest is different from simple interest, where interest isn't added to the principal (Source 1).\n*   **Frequency matters:** The more frequently interest is compounded (e.g., daily vs. annually), the faster the principal grows (Source 1, 3). For instance, corporate and government bonds usually pay interest twice a year (semi-annually) (Source 2).\n*   **Exponential growth:**  Due to compounding, debt grows exponentially (Source 3).",
+    "token_stats": {
+      "input_tokens": 751,
+      "output_tokens": 209,
+      "rag_tokens": {
+        "query_tokens": 6,
+        "context_tokens": 644,
+        "embedding_tokens": 6,
+        "num_chunks": 3,
+        "cache_hit": false
+      }
+    },
+    "timestamp": "2025-12-25T17:56:00.888582",
+    "access_count": 1
+  },
+  "725ac4ab643fcb6e02edc1b2446c3dde": {
+    "query": "what is a bond, and how is it different from a stock",
+    "response": "A bond is a type of security where the issuer (borrower) owes the bondholder (lender) a debt. The issuer is obligated to provide cash flow to the bondholder, which usually includes repaying the principal (the amount borrowed) at the maturity date, along with interest payments (called coupons) over a set period (Source 1). Think of a bond as an \"I owe you\" or a loan (Source 1).\n\nHere's how a bond differs from a stock (Source 2):\n\n*   **Ownership:** Bondholders are lenders (creditors) to a company, while stockholders have an equity stake, meaning they are part-owners of the company.\n*   **Priority:** In the event of bankruptcy, bondholders get paid before stockholders but after secured creditors.\n*   **Maturity:** Bonds typically have a defined term, or maturity date, when the principal is repaid, whereas stocks usually remain outstanding indefinitely. There are exceptions, such as irredeemable bonds (perpetuities) that don't have a maturity date (Source 2).\n*   **Fixed Income:** Bonds usually provide a fixed income stream through interest payments (coupons), while stock returns depend on the company's performance and can fluctuate.\n*   **Risk and Return:** Generally, bonds are considered less risky than stocks but also offer lower potential returns.\n\nIn short, buying a bond is like lending money to a company or government, while buying stock is like buying a piece of the company (Source 1, 2).",
+    "token_stats": {
+      "input_tokens": 1267,
+      "output_tokens": 353,
+      "rag_tokens": {
+        "query_tokens": 13,
+        "context_tokens": 602,
+        "embedding_tokens": 13,
+        "num_chunks": 3,
+        "cache_hit": false
+      }
+    },
+    "timestamp": "2025-12-25T18:00:13.155595",
+    "access_count": 1
+  },
+  "caf517f0fda4d0d19e67977c518506ab": {
+    "query": "what is fixed income",
+    "response": "Fixed income refers to any type of investment security that pays out a fixed, pre-determined income stream to investors (Source 2). This means investors know in advance the amount and schedule of payments they will receive.\n\nHere's a breakdown of what fixed income entails:\n\n*   **Regular Payments:** Fixed-income securities provide regular interest payments or dividends over a specific period (Source 1).\n*   **Predictable Cash Flow:** The appeal of fixed income is the predictable cash flow, making it attractive to investors seeking stability and income.\n*   **Examples:** Common examples of fixed-income investments include:\n    *   **Bonds:** Debt securities issued by corporations, governments, or municipalities (Source 2).\n    *   **Preferred Stock:** A type of stock that pays a fixed dividend payment.\n    *   **Mortgage-Backed Securities (MBS):** Securities that are backed by a pool of mortgages.\n*   **Less Volatile:** Fixed-income investments are generally considered less volatile than other asset classes like stocks (Source 2).\n*   **Inverse Relationship with Interest Rates:** Rising interest rates typically cause bond prices to fall, while falling rates cause bond prices to rise.\n*   **Inflation Risk:** A key risk with fixed income is inflation, which can erode the purchasing power of the fixed payments over time.",
+    "token_stats": {
+      "input_tokens": 1597,
+      "output_tokens": 334,
+      "rag_tokens": {
+        "query_tokens": 5,
+        "context_tokens": 574,
+        "embedding_tokens": 5,
+        "num_chunks": 3,
+        "cache_hit": false
+      }
+    },
+    "timestamp": "2025-12-25T18:05:01.825663",
+    "access_count": 2,
+    "last_accessed": "2025-12-25T18:15:16.724709"
+  },
+  "027cf0d9f41a94ab0c3793b2d2f3d7b3": {
+    "query": "how to calculate compound interest",
+    "response": "Compound interest is calculated on the principal amount and the accumulated interest from previous periods (Source 1). Here's a breakdown of how compounding works and factors that influence it:\n\n**Basics of Compound Interest**\n\n*   **Definition:** Compound interest is when you earn interest not only on your initial investment (the principal) but also on the interest you've already earned (Source 1).\n*   **Compounding Frequency:** This refers to how often the interest is calculated and added to the principal. It could be yearly, semi-annually, quarterly, monthly, daily, or even continuously (Source 1). The more frequent the compounding, the faster your investment grows.\n\n**Factors Affecting Compound Interest**\n\n1.  **Principal Sum:** The initial amount of money you invest or borrow.\n2.  **Interest Rate:** The percentage charged or paid on the principal.\n3.  **Compounding Frequency:** How often the interest is calculated and added to the principal (e.g., annually, monthly, daily) (Source 1).\n4.  **Time Period:** The length of time the money is invested or borrowed.\n\n**Example**\n\nIf you deposit money in a bank account, the interest earned is added to your principal (Source 1). So, in the next period, you earn interest on the original principal plus the interest already earned. This contrasts with simple interest, where you only earn interest on the original principal (Source 1).\n\n**Real-World Examples**\n\n*   **Bonds:** Corporate and government bonds usually pay interest twice a year. The interest paid every six months is calculated by dividing the annual interest rate by two and multiplying it by the principal (Source 2).\n*   **Mortgages (Canada):** Canadian mortgage loans generally compound semi-annually, even if you make monthly payments (Source 2).\n*   **Mortgages (US):** U.S. mortgages typically use an amortizing loan structure where interest is not added to the principal, but rather paid off monthly (Source 2). An amortization schedule determines how much of each payment goes toward principal and interest (Source 2).",
+    "token_stats": {
+      "input_tokens": 753,
+      "output_tokens": 513,
+      "rag_tokens": {
+        "query_tokens": 8,
+        "context_tokens": 644,
+        "embedding_tokens": 8,
+        "num_chunks": 3,
+        "cache_hit": false
+      }
+    },
+    "timestamp": "2025-12-25T18:14:37.972951",
+    "access_count": 2,
+    "last_accessed": "2025-12-25T18:22:07.309785"
+  },
+  "164fb21c3cca355d35f6cec3ea60606a": {
+    "query": "what is EPS",
+    "response": "EPS stands for Earnings Per Share. According to financial principles, EPS represents the net income available to common shareholders.",
+    "token_stats": {
+      "input_tokens": 1122,
+      "output_tokens": 33,
+      "rag_tokens": {
+        "query_tokens": 2,
+        "context_tokens": 498,
+        "embedding_tokens": 2,
+        "num_chunks": 3,
+        "cache_hit": false
+      }
+    },
+    "timestamp": "2025-12-25T18:15:05.871684",
+    "access_count": 1
+  },
+  "c1d5c822cada9c167a5624d02b47991a": {
+    "query": "how is bonds categorized ",
+    "response": "Bonds can be categorized in several ways, primarily based on the issuer, credit quality, and maturity. Here's a breakdown:\n\n**1. By Issuer:**\n\n*   **Government Bonds:** Issued by national governments to finance spending. These are often considered lower risk, especially those from developed nations (Source 1).\n*   **Municipal Bonds:** Issued by state, city, or local governments to fund public projects. These can be tax-exempt, making them attractive to investors (Source 2).\n*   **Corporate Bonds:** Issued by companies to raise capital for various purposes, such as expansion or acquisitions. Corporate bonds generally carry a higher risk than government bonds (Source 2).\n\n**2. By Credit Quality:**\n\n*   **Investment-Grade Bonds:** These bonds are considered relatively low risk and are rated BBB- or higher by Standard & Poor's or Baa3 or higher by Moody's (Source 3).\n*   **High-Yield Bonds (Junk Bonds):** These bonds have a lower credit rating (BB+ or lower by S&P, or Ba1 or lower by Moody's) and are considered riskier. To compensate for the higher risk, they offer higher yields (Source 3).\n\n**3. By Maturity:**\n\n*   **Short-Term Bonds:** Mature in one to five years (Source 3).\n*   **Intermediate-Term Bonds:** Mature in five to ten years (Source 3).\n*   **Long-Term Bonds:** Mature in over ten years (Source 3).\n\n**4. Other Types of Bonds:**\n\n*   **Convertible Bonds:** These bonds can be converted into a predetermined amount of the issuer's equity or common stock (Source 3).\n*   **Zero-Coupon Bonds:** These bonds don't pay periodic interest (coupons). Instead, they are sold at a discount to their face value and mature at face value (Source 1). The investor's return comes from the difference between the purchase price and the face value.\n*   **Inflation-Indexed Bonds:** These bonds are designed to protect investors from inflation. The principal amount is adjusted based on an inflation index (Source 1).",
+    "token_stats": {
+      "input_tokens": 1252,
+      "output_tokens": 481,
+      "rag_tokens": {
+        "query_tokens": 6,
+        "context_tokens": 626,
+        "embedding_tokens": 6,
+        "num_chunks": 3,
+        "cache_hit": false
+      }
+    },
+    "timestamp": "2025-12-25T21:28:25.467835",
+    "access_count": 1
   }
 }

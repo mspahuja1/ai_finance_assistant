@@ -63,5 +63,83 @@
     },
     "timestamp": "2025-12-24T11:19:25.016150",
     "access_count": 1
+  },
+  "c5a1f2e76868dc2c3159beacaf9030bd": {
+    "query": "What is compound interest?",
+    "context": "[Source 1: Compound interest]\nCompound interest is interest accumulated from a principal sum and previously accumulated interest. It is the result of reinvesting or retaining interest that would otherwise be paid out, or of the accumulation of debts from a borrower.\nCompound interest is contrasted with simple interest, where previously accumulated interest is not added to the principal amount of the current period. Compounded interest depends on the simple interest rate applied and the frequency at which the interest is compounded.\n\n\n== Compounding frequency ==\nThe compounding frequency is the number of times per given unit of time the accumulated interest is capitalized, on a regular basis. The frequency could be yearly, half-yearly, quarterly, monthly, weekly, daily, continuously, or not at all until maturity.\nFor example, monthly capitalization with interest expressed as an annual rate means that the compounding frequency is 12, with time periods measured in months.\n\n---\n\n[Source 2: Compound interest]\nThe interest on corporate bonds and government bonds is usually payable twice yearly. The amount of interest paid every six months is the disclosed interest rate divided by two and multiplied by the principal. The yearly compounded rate is higher than the disclosed rate.\nCanadian mortgage loans are generally compounded semi-annually with monthly or more frequent payments.\nU.S. mortgages use an amortizing loan, not compound interest. With these loans, an amortization schedule is used to determine how to apply payments toward principal and interest.  Interest generated on these loans is not added to the principal, but rather is paid off monthly as the payments are applied.\n\n---\n\n[Source 3: Interest]\nInterest differs from profit, in that interest is received by a lender, whereas profit is received by the owner of an asset, investment or enterprise. (Interest may be part or the whole of the profit on an investment, but the two concepts are distinct from each other from an accounting perspective.)\nThe rate of interest is equal to the interest amount paid or received over a particular period divided by the principal sum borrowed or lent (usually expressed as a percentage).\nCompound interest means that interest is earned on prior interest in addition to the principal. Due to compounding, the total amount of debt grows exponentially, and its mathematical study led to the discovery of the number e. In practice, interest is most often calculated on a daily, monthly, or yearly basis, and its impact is influenced greatly by its compounding rate.",
+    "token_stats": {
+      "query_tokens": 6,
+      "context_tokens": 644,
+      "embedding_tokens": 6,
+      "num_chunks": 3,
+      "cache_hit": false
+    },
+    "timestamp": "2025-12-25T17:55:59.010421",
+    "access_count": 1
+  },
+  "725ac4ab643fcb6e02edc1b2446c3dde": {
+    "query": "what is a bond, and how is it different from a stock",
+    "context": "[Source 1: Bond (finance)]\nIn finance, a bond is a type of security under which the issuer (debtor) owes the holder (creditor) a debt, and is obliged \u2013 depending on the terms \u2013 to provide cash flow to the creditor; which usually consists of repaying the principal (the amount borrowed) of the bond at the maturity date, as well as interest (called the coupon) over a specified amount of time. The timing and the amount of cash flow provided varies, depending on the economic value that is emphasized upon, thus giving rise to different types of bonds. The interest is usually payable at fixed intervals: semiannual, annual, and less often at other periods. Thus, a bond is a form of loan or IOU. Bonds provide the borrower with external funds to finance long-term investments or, in the case of government bonds, to finance current expenditure.\n\n---\n\n[Source 2: Bond (finance)]\nBonds and stocks are both securities, but the major difference between the two is that (capital) stockholders have an equity stake in a company (i.e. they are owners), whereas bondholders have a creditor stake in a company (i.e. they are lenders). As creditors, bondholders have priority over stockholders. This means they will be repaid in advance of stockholders, but will rank behind secured creditors, in the event of bankruptcy. Another difference is that bonds usually have a defined term, or maturity, after which the bond is redeemed, whereas stocks typically remain outstanding indefinitely. An exception is an irredeemable bond, which is a perpetuity, that is, a bond with no maturity. Certificates of deposit (CDs) or short-term commercial paper are classified as money market instruments and not bonds: the main difference is the length of the term of the instrument.\n\n---\n\n[Source 3: Bond (finance)]\nThe most common forms include municipal, corporate, and government bonds. Very often the bond is negotiable, that is, the ownership of the instrument can be transferred in the secondary market. This means that once the transfer agents at the bank medallion-stamp the bond, it is highly liquid on the secondary market. The price of a bond in the secondary market may differ substantially from the principal due to various factors in bond valuation.\nBonds are often identified by their international securities identification number, or ISIN, which is a 12-digit alphanumeric code that uniquely identifies debt securities.",
+    "token_stats": {
+      "query_tokens": 13,
+      "context_tokens": 602,
+      "embedding_tokens": 13,
+      "num_chunks": 3,
+      "cache_hit": false
+    },
+    "timestamp": "2025-12-25T18:00:10.301463",
+    "access_count": 1
+  },
+  "caf517f0fda4d0d19e67977c518506ab": {
+    "query": "what is fixed income",
+    "context": "[Source 1: Dynamic asset allocation]\n== See also ==\nTactical asset allocation\nGlobal tactical asset allocation\nConstant proportion portfolio insurance\nCredit derivative\nPrincipal protected note\nStructured investment products\nZero-coupon bond\n\n\n== References ==\n\n---\n\n[Source 2: Investment]\nPrivate equity in businesses that are not publicly traded on a stock exchange, often involving venture capital funds, angel investors, or equity crowdfunding\nOther loans, including mortgages\nCommodities, such as precious metals like gold, agricultural products like potatoes, and energy deliveries like natural gas\nCollectables, including art, coins, vintage cars, postage stamps, and wine\nCarbon offsets and credits\nDigital entities like cryptocurrency and non-fungible tokens\nHedge funds that use sophisticated techniques like:\nDerivatives, the value of which is determined by a contract and is derived by calculation from the performance of some other sort of underlying investment; these include forwards, futures, options, swaps, collateralized debt obligations, credit default swaps, and Tax Receivable Agreements\nLeveraged investing, which is the investment of borrowed money\nShort selling, which typically uses leverage and derivatives to bet that the value of a stock will decline\n\n---\n\n[Source 3: Investment]\nPrivate equity in businesses that are not publicly traded on a stock exchange, often involving venture capital funds, angel investors, or equity crowdfunding\nOther loans, including mortgages\nCommodities, such as precious metals like gold, agricultural products like potatoes, and energy deliveries like natural gas\nCollectables, including art, coins, vintage cars, postage stamps, and wine\nCarbon offsets and credits\nDigital entities like cryptocurrency and non-fungible tokens\nHedge funds that use sophisticated techniques like:\nDerivatives, the value of which is determined by a contract and is derived by calculation from the performance of some other sort of underlying investment; these include forwards, futures, options, swaps, collateralized debt obligations, credit default swaps, and Tax Receivable Agreements\nLeveraged investing, which is the investment of borrowed money\nShort selling, which typically uses leverage and derivatives to bet that the value of a stock will decline",
+    "token_stats": {
+      "query_tokens": 5,
+      "context_tokens": 574,
+      "embedding_tokens": 5,
+      "num_chunks": 3,
+      "cache_hit": false
+    },
+    "timestamp": "2025-12-25T18:04:59.272931",
+    "access_count": 1
+  },
+  "027cf0d9f41a94ab0c3793b2d2f3d7b3": {
+    "query": "how to calculate compound interest",
+    "context": "[Source 1: Compound interest]\nCompound interest is interest accumulated from a principal sum and previously accumulated interest. It is the result of reinvesting or retaining interest that would otherwise be paid out, or of the accumulation of debts from a borrower.\nCompound interest is contrasted with simple interest, where previously accumulated interest is not added to the principal amount of the current period. Compounded interest depends on the simple interest rate applied and the frequency at which the interest is compounded.\n\n\n== Compounding frequency ==\nThe compounding frequency is the number of times per given unit of time the accumulated interest is capitalized, on a regular basis. The frequency could be yearly, half-yearly, quarterly, monthly, weekly, daily, continuously, or not at all until maturity.\nFor example, monthly capitalization with interest expressed as an annual rate means that the compounding frequency is 12, with time periods measured in months.\n\n---\n\n[Source 2: Compound interest]\nThe interest on corporate bonds and government bonds is usually payable twice yearly. The amount of interest paid every six months is the disclosed interest rate divided by two and multiplied by the principal. The yearly compounded rate is higher than the disclosed rate.\nCanadian mortgage loans are generally compounded semi-annually with monthly or more frequent payments.\nU.S. mortgages use an amortizing loan, not compound interest. With these loans, an amortization schedule is used to determine how to apply payments toward principal and interest.  Interest generated on these loans is not added to the principal, but rather is paid off monthly as the payments are applied.\n\n---\n\n[Source 3: Interest]\nInterest differs from profit, in that interest is received by a lender, whereas profit is received by the owner of an asset, investment or enterprise. (Interest may be part or the whole of the profit on an investment, but the two concepts are distinct from each other from an accounting perspective.)\nThe rate of interest is equal to the interest amount paid or received over a particular period divided by the principal sum borrowed or lent (usually expressed as a percentage).\nCompound interest means that interest is earned on prior interest in addition to the principal. Due to compounding, the total amount of debt grows exponentially, and its mathematical study led to the discovery of the number e. In practice, interest is most often calculated on a daily, monthly, or yearly basis, and its impact is influenced greatly by its compounding rate.",
+    "token_stats": {
+      "query_tokens": 8,
+      "context_tokens": 644,
+      "embedding_tokens": 8,
+      "num_chunks": 3,
+      "cache_hit": false
+    },
+    "timestamp": "2025-12-25T18:14:34.601761",
+    "access_count": 1
+  },
+  "164fb21c3cca355d35f6cec3ea60606a": {
+    "query": "what is EPS",
+    "context": "[Source 1: Stock valuation]\n=== Earnings per share (EPS) ===\n\nEPS is the net income available to commo\n\n---\n\n[Source 2: Stock valuation]\n=== Discounted cash flow ===\nThe discounted cash flow (DCF) method involves discounting of the profits (dividends, earnings, or cash flows) that the stock will bring to the stockholder in the foreseeable future, and sometimes a final value on disposal, depending on the valuation method. DCF method assumes that borrowing and lending rates are same. The discounted rate normally includes a risk premium which is commonly based on the capital asset pricing model. \nFor discussion of the mechanics, see Valuation using discounted cash flows.\nIn July 2010, a Delaware court ruled on appropriate inputs to use in discounted cash flow analysis in a dispute between shareholders and a company over the proper fair value of the stock. In this case the shareholders' model provided value of $139 per share and the company's model provided $89 per share. Contested inputs included the terminal growth rate, the equity risk premium, and beta.\n\n\n=== Earnings per share (EPS) ===\n\n---\n\n[Source 3: 401(k)]\n== History ==\nBefore 1974, some U.S. employers had been giving their staff the option of receiving cash in lieu of an employer-paid contribution to their tax-qualified retirement plan accounts. The U.S. Congress banned new plans of this type in 1974, pending further study. After that study was completed, Congress reauthorized such plans, provided they satisfied certain special requirements. Congress did this by enacting Internal Revenue Code Section 401(k) as part of the Revenue Act.  This occurred on 6 November 1978.\nThe first implementation of the 401(k) plan was in 1978, about three weeks after Section 401(k) was enacted, before the Revenue Act of 1978 even went into effect. Ethan Lipsig, of the outside law firm for Hughes Aircraft Company, sent a letter to Hughes Aircraft outlining how it could convert its after-tax savings plan into a  401(k) plan.",
+    "token_stats": {
+      "query_tokens": 2,
+      "context_tokens": 498,
+      "embedding_tokens": 2,
+      "num_chunks": 3,
+      "cache_hit": false
+    },
+    "timestamp": "2025-12-25T18:15:04.903139",
+    "access_count": 1
+  },
+  "c1d5c822cada9c167a5624d02b47991a": {
+    "query": "how is bonds categorized ",
+    "context": "[Source 1: Bond (finance)]\nIn finance, a bond is a type of security under which the issuer (debtor) owes the holder (creditor) a debt, and is obliged \u2013 depending on the terms \u2013 to provide cash flow to the creditor; which usually consists of repaying the principal (the amount borrowed) of the bond at the maturity date, as well as interest (called the coupon) over a specified amount of time. The timing and the amount of cash flow provided varies, depending on the economic value that is emphasized upon, thus giving rise to different types of bonds. The interest is usually payable at fixed intervals: semiannual, annual, and less often at other periods. Thus, a bond is a form of loan or IOU. Bonds provide the borrower with external funds to finance long-term investments or, in the case of government bonds, to finance current expenditure.\n\n---\n\n[Source 2: Bond (finance)]\nThe most common forms include municipal, corporate, and government bonds. Very often the bond is negotiable, that is, the ownership of the instrument can be transferred in the secondary market. This means that once the transfer agents at the bank medallion-stamp the bond, it is highly liquid on the secondary market. The price of a bond in the secondary market may differ substantially from the principal due to various factors in bond valuation.\nBonds are often identified by their international securities identification number, or ISIN, which is a 12-digit alphanumeric code that uniquely identifies debt securities.\n\n---\n\n[Source 3: Asset allocation]\n== Asset classes ==\nAn asset class is a group of economic resources sharing similar characteristics, such as riskiness and return. There are many types of assets that may or may not be included in an asset allocation strategy.\n\n\n=== Traditional assets ===\nThe \"traditional\" asset classes are stocks, bonds, and cash:\n\nStocks: value, dividend, growth, or sector-specific (or a \"blend\" of any two or more of the preceding); large-cap versus mid-cap, small-cap or micro-cap; domestic, foreign (developed), emerging or frontier markets\nBonds (fixed income securities more generally): investment-grade or junk (high-yield); government or corporate; short-term, intermediate, long-term; domestic, foreign, emerging markets\nCash and cash equivalents (e.g., deposit account, money market fund)\nAllocation among these three provides a starting point. Usually included are hybrid instruments such as convertible bonds and preferred stocks, counting as a mixture of bonds and stocks.",
+    "token_stats": {
+      "query_tokens": 6,
+      "context_tokens": 626,
+      "embedding_tokens": 6,
+      "num_chunks": 3,
+      "cache_hit": false
+    },
+    "timestamp": "2025-12-25T21:28:22.002160",
+    "access_count": 1
   }
 }
