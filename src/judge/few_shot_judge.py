@@ -61,6 +61,7 @@ class FewShotJudge(BaseJudge):
         context_info = self._format_context(context) if context else ""
         
         prompt = f"""{examples_text}
+        
 
 Now evaluate this {agent_type} agent response following the same criteria and format.
 

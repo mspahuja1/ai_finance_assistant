@@ -16,19 +16,19 @@ Make sure your API key is there.
 Cleaning up log files -
 =====================
 1. List all log files
-bashpython cleanup_logs.py list
+bash python cleanup_logs.py list
 2. Clean (delete) all logs with backup
-bashpython cleanup_logs.py clean
+bash python cleanup_logs.py clean
 3. Clean without backup (⚠️ use with caution!)
-bashpython cleanup_logs.py clean --no-backup
+bash python cleanup_logs.py clean --no-backup
 4. Truncate logs (empty but keep files)
-bashpython cleanup_logs.py truncate
+bash python cleanup_logs.py truncate ******** I use this a lot ***********
 5. Archive logs to ZIP
-bashpython cleanup_logs.py archive
+bash python cleanup_logs.py archive
 6. Backup logs only
-bashpython cleanup_logs.py backup
+bash python cleanup_logs.py backup
 7. Custom log directory
-bashpython cleanup_logs.py clean --log-dir /path/to/logs
+bash python cleanup_logs.py clean --log-dir /path/to/logs
 Quick Shell Scripts
 You can also create quick shell scripts:
 clean_logs.sh (Unix/Mac/Linux)
@@ -48,3 +48,12 @@ bash# View stats
 python src/tools/manage_cache.py stats
 # Clear cache
 python src/tools/manage_cache.py clear
+
+# Verify installation for langSmith
+python -c "import langsmith; print(langsmith.__version__)"
+
+
+# to find a word in any script - 
+    bash
+    cd /Users/mandeep/myprojects/ai_finance_assistant
+    grep -n "CONTEXT\|{context}" src/agents/tax_agent.py

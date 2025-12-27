@@ -141,5 +141,18 @@
     },
     "timestamp": "2025-12-25T21:28:22.002160",
     "access_count": 1
+  },
+  "4a5c059f9e5dc4ffc432c76af9c5d2d7": {
+    "query": "what is simple interest and how is it different from compound interest",
+    "context": "[Source 1: Compound interest]\nCompound interest is interest accumulated from a principal sum and previously accumulated interest. It is the result of reinvesting or retaining interest that would otherwise be paid out, or of the accumulation of debts from a borrower.\nCompound interest is contrasted with simple interest, where previously accumulated interest is not added to the principal amount of the current period. Compounded interest depends on the simple interest rate applied and the frequency at which the interest is compounded.\n\n\n== Compounding frequency ==\nThe compounding frequency is the number of times per given unit of time the accumulated interest is capitalized, on a regular basis. The frequency could be yearly, half-yearly, quarterly, monthly, weekly, daily, continuously, or not at all until maturity.\nFor example, monthly capitalization with interest expressed as an annual rate means that the compounding frequency is 12, with time periods measured in months.\n\n---\n\n[Source 2: Interest]\nInterest differs from profit, in that interest is received by a lender, whereas profit is received by the owner of an asset, investment or enterprise. (Interest may be part or the whole of the profit on an investment, but the two concepts are distinct from each other from an accounting perspective.)\nThe rate of interest is equal to the interest amount paid or received over a particular period divided by the principal sum borrowed or lent (usually expressed as a percentage).\nCompound interest means that interest is earned on prior interest in addition to the principal. Due to compounding, the total amount of debt grows exponentially, and its mathematical study led to the discovery of the number e. In practice, interest is most often calculated on a daily, monthly, or yearly basis, and its impact is influenced greatly by its compounding rate.\n\n---\n\n[Source 3: Compound interest]\nThe interest on corporate bonds and government bonds is usually payable twice yearly. The amount of interest paid every six months is the disclosed interest rate divided by two and multiplied by the principal. The yearly compounded rate is higher than the disclosed rate.\nCanadian mortgage loans are generally compounded semi-annually with monthly or more frequent payments.\nU.S. mortgages use an amortizing loan, not compound interest. With these loans, an amortization schedule is used to determine how to apply payments toward principal and interest.  Interest generated on these loans is not added to the principal, but rather is paid off monthly as the payments are applied.",
+    "token_stats": {
+      "query_tokens": 17,
+      "context_tokens": 644,
+      "embedding_tokens": 17,
+      "num_chunks": 3,
+      "cache_hit": false
+    },
+    "timestamp": "2025-12-26T14:11:40.492589",
+    "access_count": 1
   }
 }

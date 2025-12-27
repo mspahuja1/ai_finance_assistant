@@ -15,10 +15,20 @@ from utils.llm_config import llm
 from utils.logging_config import create_logger
 from utils.semantic_cache import TwoLevelCache  # Import cache module
 
+
 # RAG imports
 from langchain_community.vectorstores import FAISS
 from langchain_google_genai import GoogleGenerativeAIEmbeddings
 from dotenv import load_dotenv
+
+# ✨ ADD: LangSmith import
+from config.langsmith_config import (
+    get_langsmith_config,
+    trace_rag_retrieval,
+    trace_cache_lookup,
+    LANGSMITH_ENABLED
+)
+
 
 finance_logger = create_logger("finance_agent", "finance_agent.log")
 
@@ -173,7 +183,7 @@ class FinanceRAG:
 
 # ===================================================================
 # INITIALIZE RAG SYSTEM
-# Designed and developed by Mandeep Pahuja
+# Author: Mandeep Pahuja
 # ===================================================================
 
 # Get API key
@@ -201,16 +211,15 @@ else:
     finance_logger.warning("⚠️ Vector store not found at: %s", vector_store_path)
     finance_logger.warning("⚠️ Run 'python src/tools/setup_rag.py' to create it")
 
-# ✨ Initialize evaluation runner (only once!)
+    
+# Initialize evaluation runner
 if EVALUATION_ENABLED:
-    eval_runner = EvaluationRunner(
-        eval_dir="evaluations/finance",
-    #    enable_logging=True
-    )
-    eval_runner.start()
-    finance_logger.info("✅ Evaluation system started")
+    finance_agent_eval_runner = EvaluationRunner(eval_dir="evaluations/finance_agent")
+    finance_agent_eval_runner.start()
+    finance_logger.info("✅ Evaluation system started for finance_agent agent")
 else:
-    eval_runner = None
+    finance_agent_eval_runner = None
+
 
 # Token tracking
 total_llm_input_tokens = 0
@@ -235,6 +244,13 @@ def finance_agent(state: MessagesState):
     user_query = user_message.content if hasattr(user_message, 'content') else str(user_message)
     finance_logger.info("📝 User query: %s", user_query)
     
+    # ✨ NEW: Create LangSmith config
+    ls_metadata = {
+        "rag_enabled": rag_enabled,
+        "agent_version": "1.0",
+        "has_cache": True
+    }
+    
     # ============================================================
     # LEVEL 2 CACHE CHECK: Check for cached LLM response FIRST
     # ============================================================
@@ -245,26 +261,39 @@ def finance_agent(state: MessagesState):
         
         cache_hit, cached_response = finance_rag.get_cached_response(user_query)
         
-        if cache_hit:
+        # ✨ NEW: Trace cache lookup
+        if LANGSMITH_ENABLED:
+            trace_cache_lookup(
+                query=user_query,
+                cache_type="llm_response",
+                cache_hit=cache_hit,
+                agent_name="finance"
+            )
+        
+        if cache_hit and cached_response:  # ← Add check for cached_response
             finance_logger.info("🎯 LEVEL 2 CACHE HIT! Returning cached LLM response")
             finance_logger.info("💰 Savings: Skipped RAG retrieval + LLM generation")
             
-            # ✨ NEW: Queue evaluation even for cached responses
-        if EVALUATION_ENABLED and eval_runner:
-            try:
-                eval_runner.queue_evaluation(
-                    user_query=user_query,
-                    agent_response=cached_response,
-                    agent_type="finance",
-                    context={
-                    "rag_used": rag_enabled,
-                    "cache_hit": True,
-                    "llm_cache_hit": True
-                    }
-                )
-                finance_logger.info("📊 Evaluation queued (cached response)")
-            except Exception as e:
-                finance_logger.error(f"❌ Evaluation queue failed: {e}")
+            # Update metadata
+            ls_metadata["cache_hit"] = True
+            ls_metadata["cache_type"] = "llm_response"
+            
+            # ✨ Queue evaluation for cached responses
+            if EVALUATION_ENABLED and finance_agent_eval_runner:  # ← Fixed variable name
+                try:
+                    finance_agent_eval_runner.queue_evaluation(  # ← Fixed variable name
+                        user_query=user_query,
+                        agent_response=cached_response,
+                        agent_type="finance",
+                        context={
+                            "rag_used": rag_enabled,
+                            "cache_hit": True,
+                            "llm_cache_hit": True
+                        }
+                    )
+                    finance_logger.info("📊 Evaluation queued (cached response)")
+                except Exception as e:
+                    finance_logger.error(f"❌ Evaluation queue failed: {e}")
             
             # Log cache statistics
             cache_stats = finance_rag.get_cache_stats()
@@ -287,8 +316,6 @@ def finance_agent(state: MessagesState):
             finance_logger.warning("⚠️ Cache hit but response is None, proceeding normally")
 
         finance_logger.info("🔍 LEVEL 2 CACHE MISS - Proceeding to RAG retrieval...")
-
-        #finance_logger.info("🔍 LEVEL 2 CACHE MISS - Proceeding to RAG retrieval...")
     
     # ============================================================
     # LEVEL 1: Retrieve context (with RAG caching)
@@ -302,6 +329,26 @@ def finance_agent(state: MessagesState):
         finance_logger.info("=" * 80)
         
         context, rag_token_stats = finance_rag.retrieve(user_query, k=3)
+        
+        # ✨ NEW: Trace RAG retrieval
+        if LANGSMITH_ENABLED and context:
+            # Get documents for tracing (this is a simplified version)
+            # You may need to modify FinanceRAG to return docs separately
+            trace_rag_retrieval(
+                query=user_query,
+                retrieved_docs=[],  # Would need to pass docs from retrieve()
+                agent_name="finance",
+                num_chunks=rag_token_stats.get("num_chunks", 0),
+                cache_hit=rag_token_stats.get("cache_hit", False)
+            )
+        # Update metadata
+        ls_metadata.update({
+            "rag_used": True,
+            "rag_cache_hit": rag_token_stats.get("cache_hit", False),
+            "num_chunks": rag_token_stats.get("num_chunks", 0),
+            "context_tokens": rag_token_stats.get("context_tokens", 0)
+        })    
+        
         
         if context:
             cache_status = "⚡ CACHED" if rag_token_stats.get("cache_hit") else "🔍 FRESH"
@@ -321,12 +368,12 @@ def finance_agent(state: MessagesState):
         system = SystemMessage(content=f"""You are an expert Finance Q&A Agent with access to a comprehensive financial knowledge base.
 
 **INSTRUCTIONS:**
-1. Use the CONTEXT below as your PRIMARY source
+1. Use the RETRIEVED INFORMATION below as your PRIMARY source
 2. Cite naturally (e.g., "According to financial principles...")
 3. Supplement with general knowledge if needed
 4. Explain clearly and simply with examples
 
-**CONTEXT:**
+**RETRIEVED INFORMATION:**
 {context}
 
 Help users understand investing, personal finance, and money management.""")
@@ -352,18 +399,34 @@ Explain financial concepts clearly and simply with examples.""")
     # LLM GENERATION
     # ============================================================
     finance_logger.info("🤖 Invoking LLM...")
-    response = llm.invoke([system] + state["messages"])
+    
+    # ✨ NEW: Get LangSmith config
+    # ✨ AFTER (updated)
+    langsmith_config = get_langsmith_config(
+        agent_name="finance",
+        tags=["rag" if rag_enabled else "no-rag", "production"],
+        metadata=ls_metadata,
+        reference_context=context if rag_enabled and context else "",  # ✨ NEW
+        reference_outputs=""  # ✨ NEW - can add expected outputs if you have them
+    )
+    
+    # ✨ MODIFIED: Add config to invoke
+    response = llm.invoke(
+        [system] + state["messages"],
+        config=langsmith_config  # ← Add this for automatic tracing
+    )
     response_content = response.content if hasattr(response, 'content') else str(response)
     
     output_tokens = estimate_gemini_tokens(response_content)
     finance_logger.info("📊 LLM Output: %d tokens", output_tokens)
     
+    
     # ============================================================
     # QUEUE EVALUATION (only once!)
     # ============================================================
-    if EVALUATION_ENABLED and eval_runner:
+    if EVALUATION_ENABLED and finance_agent_eval_runner:  # ← Fixed variable name
         try:
-            eval_runner.queue_evaluation(
+            finance_agent_eval_runner.queue_evaluation(  # ← Fixed variable name
                 user_query=user_query,
                 agent_response=response_content,
                 agent_type="finance",

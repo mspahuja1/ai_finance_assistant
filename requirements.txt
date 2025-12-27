@@ -6,6 +6,7 @@ langchain==1.0.0
 langgraph==1.0.0
 langchain-community
 langchain-core
+langsmith --upgrade
 
 # Connectors
 langchain-openai
