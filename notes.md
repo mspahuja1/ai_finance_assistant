@@ -1,4 +1,7 @@
-Troubleshooting
+# #############################################################################
+
+# Troubleshooting
+=====================
 If RAG doesn't seem to work:
 1. Check if vector store loaded:
 bashcat logs/finance_agent.log | grep "RAG is ENABLED"
@@ -12,6 +15,7 @@ python -c "from src.agents.finance_agent import finance_agent; print('✅ Import
 bashcat .env | grep GOOGLE_API_KEY
 Make sure your API key is there.
 
+# #############################################################################
 
 Cleaning up log files -
 =====================
@@ -40,6 +44,7 @@ Make it executable:
 bashchmod +x clean_logs.sh
 ./clean_logs.sh
 
+# #############################################################################
 
 semantic cache for RAG
 ======================
@@ -49,11 +54,97 @@ python src/tools/manage_cache.py stats
 # Clear cache
 python src/tools/manage_cache.py clear
 
+# #############################################################################
+
 # Verify installation for langSmith
+=====================
 python -c "import langsmith; print(langsmith.__version__)"
 
+# #############################################################################
 
 # to find a word in any script - 
+=====================
     bash
     cd /Users/mandeep/myprojects/ai_finance_assistant
     grep -n "CONTEXT\|{context}" src/agents/tax_agent.py
+
+# #############################################################################
+
+# Clear cache
+==============
+find . -type d -name "__pycache__" -exec rm -rf {} + 2>/dev/null
+
+# #############################################################################
+# Run Feedback Dashboard
+=====================
+python src/tools/feedback_dashboard.py
+```
+
+Should show:
+```
+================================================================================
+RECENT QUALITY SCORES - FINANCE Agent
+================================================================================
+
+Query: does a financial advisor need to go to college to learn fi...
+Score: 4.5/5
+Retries: 0
+Time: 2024-12-26T22:21:50
+
+Query: what is compound interest...
+Score: 4.8/5
+Retries: 0
+Time: 2024-12-26T22:20:15
+
+================================================================================
+PERFORMANCE METRICS
+================================================================================
+
+FINANCE Agent: ✅
+  Success Rate: 95.0%
+  Avg Latency: 3.85s
+  Avg Quality Score: 4.65/5
+
+
+# #############################################################################
+
+# Check if retry logic exists
+if grep -q "is_obvious_failure" src/agents/finance_agent.py; then
+    echo "✅ Retry logic IS implemented"
+    echo ""
+    echo "Location:"
+    grep -n "def is_obvious_failure" src/agents/finance_agent.py
+else
+    echo "❌ Retry logic NOT found"
+    echo ""
+    echo "The retry logic needs to be added to finance_agent.py"
+fi
+
+# Show the retry logic section
+sed -n '450,480p' src/agents/finance_agent.py
+# #############################################################################
+
+
+
+
+
+# #############################################################################
+
+
+
+
+
+# #############################################################################
+
+
+
+
+
+# #############################################################################
+
+
+
+
+
+
+# #############################################################################

@@ -29,9 +29,21 @@ from config.langsmith_config import (
     LANGSMITH_ENABLED
 )
 
+# Add after other imports
+import time
 
 finance_logger = create_logger("finance_agent", "finance_agent.log")
 
+# Add async feedback import
+try:
+    from feedback.async_feedback import async_feedback
+    ASYNC_FEEDBACK_ENABLED = True
+    finance_logger.info("✅ Async feedback system available")  # ← Add this line if missing
+except ImportError:
+    ASYNC_FEEDBACK_ENABLED = False
+    finance_logger.warning("⚠️ Async feedback system not available")
+    
+    
 # ===================================================================
 # EVALUATION INTEGRATION
 # ===================================================================
@@ -400,6 +412,9 @@ Explain financial concepts clearly and simply with examples.""")
     # ============================================================
     finance_logger.info("🤖 Invoking LLM...")
     
+    # Track timing
+    start_time = time.time()
+    
     # ✨ NEW: Get LangSmith config
     # ✨ AFTER (updated)
     langsmith_config = get_langsmith_config(
@@ -410,15 +425,77 @@ Explain financial concepts clearly and simply with examples.""")
         reference_outputs=""  # ✨ NEW - can add expected outputs if you have them
     )
     
-    # ✨ MODIFIED: Add config to invoke
-    response = llm.invoke(
-        [system] + state["messages"],
-        config=langsmith_config  # ← Add this for automatic tracing
-    )
+    # ✨ FIRST ATTEMPT
+    response = llm.invoke([system] + state["messages"], config=langsmith_config)
     response_content = response.content if hasattr(response, 'content') else str(response)
     
+    retry_count = 0
+    
+    # ✨ FAST FAILURE CHECK (1ms, catches obvious failures)
+    def is_obvious_failure(response_text: str) -> bool:
+        """Ultra-fast failure detection."""
+        if len(response_text) < 50:
+            return True  # Too short
+        
+        response_lower = response_text.lower()
+        if "i don't know" in response_lower and len(response_text) < 100:
+            return True  # Unhelpful
+        
+        if "i'm not sure" in response_lower and len(response_text) < 100:
+            return True  # Uncertain
+        
+        return False
+    
+    # ✨ RETRY if obvious failure (only affects ~5% of responses)
+    if is_obvious_failure(response_content):
+        finance_logger.warning(f"⚠️ Fast failure detected, retrying with enhanced prompt...")
+        retry_count = 1
+        
+        # Enhanced system prompt for retry
+        enhanced_system = SystemMessage(content=f"""{system.content}
+
+**IMPORTANT - Previous response was too brief or unhelpful. Please provide:**
+- A comprehensive, detailed explanation (at least 150 words)
+- Concrete examples with numbers
+- Step-by-step breakdown if applicable
+- Practical, actionable information
+
+Provide a complete, helpful response.""")
+    
+    # Retry with enhanced prompt
+        response = llm.invoke([enhanced_system] + state["messages"], config=langsmith_config)
+        response_content = response.content if hasattr(response, 'content') else str(response)
+        
+        finance_logger.info(f"✅ Retry completed")
+    
+    # Calculate latency
+    latency = time.time() - start_time
+    finance_logger.info(f"⏱️ Response generated in {latency:.2f}s (retries: {retry_count})")
+    
+    # ✨ ASYNC FEEDBACK (Non-blocking, <1ms total)
+    if ASYNC_FEEDBACK_ENABLED:
+        try:
+            # Queue quality check (happens in background)
+            async_feedback.queue_quality_check(
+                query=user_query,
+                response=response_content,
+                agent_type="finance",
+                retry_count=retry_count
+            )
+            
+            # Queue performance update (happens in background)
+            async_feedback.queue_performance_update(
+                agent_type="finance",
+                success=True,
+                latency=latency
+            )
+            
+            finance_logger.info("📊 Async feedback queued")
+        except Exception as e:
+            finance_logger.error(f"Failed to queue async feedback: {e}")
+   
     output_tokens = estimate_gemini_tokens(response_content)
-    finance_logger.info("📊 LLM Output: %d tokens", output_tokens)
+
     
     
     # ============================================================
@@ -435,7 +512,8 @@ Explain financial concepts clearly and simply with examples.""")
                     "rag_context": context if rag_enabled else None,
                     "sources": [context] if rag_enabled and context else [],
                     "num_chunks": rag_token_stats.get("num_chunks", 0) if rag_token_stats else 0,
-                    "cache_hit": rag_token_stats.get("cache_hit", False) if rag_token_stats else False
+                    "cache_hit": rag_token_stats.get("cache_hit", False) if rag_token_stats else False,
+                    "retry_count": retry_count  # ✨ NEW: Track retries
                 }
             )
             finance_logger.info("📊 Evaluation queued")

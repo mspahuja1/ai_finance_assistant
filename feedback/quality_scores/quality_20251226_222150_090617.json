@@ -1,0 +1,10 @@
+{
+  "score_id": "quality_20251226_222150_090617",
+  "timestamp": "2025-12-26T22:21:50.090617",
+  "query": "Test query",
+  "response": "This is a test response with enough content to be evaluated properly.",
+  "agent_type": "finance",
+  "quality_score": 4.5,
+  "retry_count": 0,
+  "date": "2025-12-26"
+}

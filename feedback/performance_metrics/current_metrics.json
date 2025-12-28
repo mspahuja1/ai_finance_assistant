@@ -1,0 +1,32 @@
+{
+  "finance": {
+    "success_rate": 0.955,
+    "avg_latency": 2.32,
+    "avg_score": 4.5
+  },
+  "market": {
+    "success_rate": 0.9,
+    "avg_latency": 5.1,
+    "avg_score": 4.2
+  },
+  "goal": {
+    "success_rate": 0.92,
+    "avg_latency": 1.8,
+    "avg_score": 4.3
+  },
+  "news": {
+    "success_rate": 0.88,
+    "avg_latency": 5.5,
+    "avg_score": 4.0
+  },
+  "portfolio": {
+    "success_rate": 0.91,
+    "avg_latency": 2.0,
+    "avg_score": 4.4
+  },
+  "tax": {
+    "success_rate": 0.93,
+    "avg_latency": 2.1,
+    "avg_score": 4.3
+  }
+}
